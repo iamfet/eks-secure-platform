@@ -104,6 +104,8 @@ This infrastructure creates the following IAM roles with specific permissions:
 - Terraform >= 1.0.0
 - AWS CLI configured with appropriate permissions
 - kubectl for Kubernetes interaction
+- Pre-existing AWS IAM users with `sts:AssumeRole` permissions to assume the created roles
+- AWS user ARNs for admin, developer, and terraform deployer roles
 
 ## Repository Structure
 
