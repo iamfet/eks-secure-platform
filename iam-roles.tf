@@ -23,7 +23,7 @@ resource "aws_iam_role_policy" "external-admin-eks-access" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      {       
+      {
         Action   = ["eks:DescribeCluster", "eks:ListClusters"]
         Effect   = "Allow"
         Resource = "*"
@@ -57,7 +57,7 @@ resource "aws_iam_role_policy" "external-developer-eks-access" {
   policy = jsonencode({
     Version = "2012-10-17"
     Statement = [
-      {       
+      {
         Action   = ["eks:DescribeCluster"]
         Effect   = "Allow"
         Resource = "*"
