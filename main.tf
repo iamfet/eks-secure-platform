@@ -108,17 +108,17 @@ module "eks" {
     }
   }
 
-  tags = {
-    environment = "development"
-    application = "${var.project_name}"
-  }
-
   eks_managed_node_groups = {
     dev = {
       instance_types = ["t2.large"]
       min_size       = 1
       max_size       = 3
-      desired_size   = 3
+      desired_size   = 4
     }
   }
+  tags = {
+    environment = "development"
+    application = "${var.project_name}"
+  }
+
 }
