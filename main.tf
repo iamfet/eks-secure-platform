@@ -61,10 +61,12 @@ module "eks" {
     coredns = {}
   }
 
-
   # Set authentication mode to API
   authentication_mode = "API"
 
+  # Adds the current caller identity as an administrator via cluster access entry
+  enable_cluster_creator_admin_permissions = true
+  
   # Add access entries including your current identity
   access_entries = {
     admin = {
@@ -94,21 +96,6 @@ module "eks" {
           access_scope = {
             type       = "namespace"
             namespaces = ["online-boutique"]
-          }
-        }
-      }
-    }
-    terraform_deployer = {
-      principal_arn = var.user_for_terraform_deployer
-      username      = "terraform-deployer"
-      type          = "STANDARD"
-
-      # Grant admin access to terraform-deployer
-      policy_associations = {
-        admin = {
-          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSClusterAdminPolicy"
-          access_scope = {
-            type = "cluster"
           }
         }
       }
