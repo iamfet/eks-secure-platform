@@ -35,7 +35,3 @@ variable "user_for_admin_role" {
 variable "user_for_dev_role" {
   description = "ARN of AWS user for developer role"
 }
-
-variable "user_for_terraform_deployer" {
-  description = "ARN of AWS user for deployer"
-}
