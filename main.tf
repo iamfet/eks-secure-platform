@@ -79,7 +79,7 @@ module "eks" {
   # Adds the current caller identity as an administrator via cluster access entry
   enable_cluster_creator_admin_permissions = true
 
-  # Add access entries including your current identity
+  # Add access entries
   access_entries = {
     admin = {
       principal_arn = aws_iam_role.external-admin.arn
@@ -118,8 +118,8 @@ module "eks" {
     dev = {
       instance_types = ["t2.large"]
       min_size       = 1
-      max_size       = 3
-      desired_size   = 4
+      max_size       = 5
+      desired_size   = 2
     }
   }
   tags = {
