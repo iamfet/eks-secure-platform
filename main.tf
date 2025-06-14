@@ -20,7 +20,7 @@ data "aws_availability_zones" "azs" {
   state = "available"
 } #queries AWS to provide the names of availability zones dynamically
 
-module "myapp-vpc" {
+module "vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = " ~> 5.21"
 
@@ -59,8 +59,8 @@ module "eks" {
   cluster_name    = "${var.project_name}-eks-cluster"
   cluster_version = var.cluster_version
 
-  subnet_ids = module.myapp-vpc.private_subnets
-  vpc_id     = module.myapp-vpc.vpc_id
+  subnet_ids = module.vpc.private_subnets
+  vpc_id     = module.vpc.vpc_id
 
   cluster_endpoint_public_access = true
 
@@ -68,10 +68,12 @@ module "eks" {
   create_node_security_group    = false
 
   cluster_addons = {
-    kube-proxy = {}
-    vpc-cni    = {}
-    coredns = {}
+    coredns                = {}
+    eks-pod-identity-agent = {}
+    kube-proxy             = {}
+    vpc-cni                = {}
   }
+
 
   # Set authentication mode to API
   authentication_mode = "API"
@@ -86,10 +88,10 @@ module "eks" {
       username      = "admin"
       type          = "STANDARD"
 
-      # Grant developer access with view-only permissions
+      # Grant admin access with view-only permissions
       policy_associations = {
         viewer = {
-          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSViewPolicy"
+          policy_arn = "arn:aws:eks::aws:cluster-access-policy/AmazonEKSAdminViewPolicy"
           access_scope = {
             type = "cluster"
           }
@@ -116,7 +118,7 @@ module "eks" {
 
   eks_managed_node_groups = {
     dev = {
-      instance_types = ["t2.large"]
+      instance_types = ["m5.xlarge"]
       min_size       = 1
       max_size       = 5
       desired_size   = 2
@@ -142,5 +144,21 @@ module "eks_blueprints_addons" {
   enable_aws_load_balancer_controller = true
   enable_metrics_server               = true
   enable_cluster_autoscaler           = true
+  cluster_autoscaler = {
+    set = [
+      {
+        name  = "extraArgs.scale-down-unneeded-time"
+        value = "2m"
+      },
+      {
+        name  = "extraArgs.skip-nodes-with-local-storage"
+        value = false
+      },
+      {
+        name  = "extraArgs.skip-nodes-with-system-pods"
+        value = false
+      }
+    ]
+  }
 
 }
